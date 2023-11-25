@@ -3,22 +3,22 @@ import { paint } from "../libs/paint";
 
 export async function paintOne() {
   const chat: TPanel = {
-    background: "the Roman Colosseum",
+    background: "Lisboa",
     chat: [
       {
-        nickname: "bat",
+        nickname: "yellow chick",
         content: [
           {
-            text: "ciao mbare!",
+            text: "fai puzza!",
             timestamp: new Date(),
           },
         ],
       },
       {
-        nickname: "horse",
+        nickname: "pinguino",
         content: [
           {
-            text: "bello vederti, ma oggi sono triste...",
+            text: "oggi non mi sono lavato...",
             timestamp: new Date(),
           },
         ],
