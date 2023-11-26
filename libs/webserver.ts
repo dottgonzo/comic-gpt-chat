@@ -29,6 +29,40 @@ webserver.use(express.json());
 //   const image = await paint(chat);
 //   res.json({ image: image.image_url });
 // });
+webserver.get("/friends", async (req: Request, res) => {
+  const stories = await getFriends();
+  res.json({ stories });
+});
+
+webserver.post("/friends", async (req: Request, res) => {
+  const stories = await addFriend();
+  res.json({ stories });
+});
+webserver.delete("/friends", async (req: Request, res) => {
+  const stories = await deleteFriend();
+  res.json({ stories });
+});
+
+webserver.get("/me", async (req: Request, res) => {
+  const stories = await getMe();
+  res.json({ stories });
+});
+
+webserver.patch("/me", async (req: Request, res) => {
+  const stories = await patchMe();
+  res.json({ stories });
+});
+
+webserver.get("/stories/withme", async (req: Request, res) => {
+  const stories = await getMyStories();
+  res.json({ stories });
+});
+
+webserver.delete("/stories/withme", async (req: Request, res) => {
+  const stories = await removeMeFromStory();
+  res.json({ stories });
+});
+
 webserver.post("/story", async (req: Request, res) => {
   const story = await createStory(req.body.background);
   res.json({ id: story._id.toString() });
