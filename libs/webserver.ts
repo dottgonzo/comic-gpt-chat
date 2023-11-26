@@ -40,12 +40,18 @@ webserver.get("/story/{storyId}", async (req: Request, res) => {
 webserver.post("/story/{storyId}", async (req: Request, res) => {
   const character = (req as any).member.character;
   const memberId = (req as any).member.memberId;
-
-  const msg = req.body as TMessageContent;
-  const message = { text: msg.text, datetime: new Date() };
   const storyId = req.params.storyId;
-  const panel = await getLastPanel(storyId);
+  if (!storyId) {
+    throw new Error("StoryId not provided");
+  }
+  const msg = req.body as TMessageContent;
   const story = await getStoryById(storyId);
+  if (!story) {
+    throw new Error("Story not found");
+  }
+
+  const message = { text: msg.text, datetime: new Date() };
+  const panel = await getLastPanel(storyId);
   let isSamePanel = true;
   let imageUri = "";
   if (!panel || !isSamePanel) {
