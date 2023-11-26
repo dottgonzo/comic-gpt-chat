@@ -2,6 +2,7 @@ import { model, Schema } from "mongoose";
 
 // 1. Create an interface representing a document in MongoDB.
 export interface IMessage {
+  character: string;
   member: any;
   story: any;
   panel: any;
@@ -15,6 +16,7 @@ const messageSchema = new Schema<IMessage>({
   story: { type: Schema.Types.ObjectId, required: true },
   panel: { type: Schema.Types.ObjectId, required: true },
   text: { type: String, required: true },
+  character: { type: String, required: true },
   datetime: { type: Date, required: true },
 });
 

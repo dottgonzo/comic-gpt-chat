@@ -1,8 +1,14 @@
+export type TPanelConversationContent = {
+  text: string;
+  datetime: Date;
+};
+export type TPanelUserChat = {
+  memberId: string;
+  character: string;
+  contents: TPanelConversationContent[];
+};
 export type TPanel = {
-  chat: {
-    nickname: string;
-    content: { text: string; timestamp: Date }[];
-  }[];
+  usersChats: TPanelUserChat[];
   background: string;
 };
 

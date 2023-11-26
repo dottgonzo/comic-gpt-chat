@@ -1,12 +1,17 @@
 import express, { Request } from "express";
 import { TPanel, TMessageContent } from "../interfaces";
 
+import { storePanelImage } from "./storage";
+
 import { paint } from "./paint";
 import {
   createPanel,
   getLastPanel,
-  getPanelById,
+  getPanelConversation,
+  getStoryById,
   updatePanel,
+  createStory,
+  getStoryConversation,
 } from "./queries";
 
 export const webserver = express();
@@ -25,42 +30,70 @@ webserver.use(express.json());
 //   res.json({ image: image.image_url });
 // });
 webserver.post("/story", async (req: Request, res) => {
-  res.json({ id: "" });
+  const story = await createStory(req.body.background);
+  res.json({ id: story._id.toString() });
 });
 webserver.get("/story/{storyId}", async (req: Request, res) => {
-  res.json({ id: "" });
+  const storyConversation = await getStoryConversation(req.params.storyId);
+  res.json({ conversation: storyConversation });
 });
 webserver.post("/story/{storyId}", async (req: Request, res) => {
-  const character = (req as any).user.character;
+  const character = (req as any).member.character;
+  const memberId = (req as any).member.memberId;
 
   const msg = req.body as TMessageContent;
-  const message = { text: msg.text, timestamp: new Date() };
+  const message = { text: msg.text, datetime: new Date() };
   const storyId = req.params.storyId;
-  let panel = await getLastPanel(storyId);
+  const panel = await getLastPanel(storyId);
+  const story = await getStoryById(storyId);
   let isSamePanel = true;
   let imageUri = "";
   if (!panel || !isSamePanel) {
-    panel = {
-      background: "the Roman Colosseum",
-      chat: [{ nickname: character, content: [message] }],
+    // create new panel
+    const userChat = {
+      character: character,
+      contents: [message],
+      memberId,
     };
-    const image = await paint(panel);
-    imageUri = image.image_url;
+    const conversation = {
+      background: story.background,
+      usersChats: [userChat],
+    };
+    const image = await paint(conversation);
+    const imageStoredUrl = await storePanelImage(
+      image.buffer,
+      storyId,
+      story.datetime
+    );
 
-    await createPanel(panel, image.image_url);
+    await createPanel(storyId, imageStoredUrl, userChat);
+    imageUri = imageStoredUrl;
   } else {
-    const userMessages = panel.chat.find((c) => c.nickname === character);
+    imageUri = panel.image;
+    const panelMessages = await getPanelConversation(panel._id.toString());
+    const userMessages = panelMessages.find((c) => c.memberId === memberId);
     if (!userMessages) {
-      panel.chat.push({ nickname: character, content: [message] });
-    } else {
-      for (const chat of panel.chat) {
-        if (chat.nickname === character) {
-          chat.content.push(message);
-        }
-      }
-      const image = await paint(panel);
-      imageUri = image.image_url;
-      await updatePanel(panel, imageUri);
+      panelMessages.push({ character, memberId, contents: [message] });
+    } else if (
+      !userMessages.contents.find((c) => c.datetime === message.datetime)
+    ) {
+      userMessages.contents.push(message);
+      const conversation = {
+        background: story.background,
+        usersChats: panelMessages,
+      };
+      const image = await paint(conversation);
+      const imageStoredUrl = await storePanelImage(
+        image.buffer,
+        storyId,
+        story.datetime
+      );
+      await updatePanel(storyId, panel._id.toString(), imageStoredUrl, {
+        memberId,
+        character,
+        contents: [message],
+      });
+      imageUri = imageStoredUrl;
     }
   }
 
