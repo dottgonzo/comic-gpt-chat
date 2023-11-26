@@ -9,8 +9,8 @@ export async function paint(panel: TPanel) {
     prompt += `${message.nickname}: ${message.content[0].text}\n`;
   }
 
-  const createImageResponse = await config.openAi.images.generate({
-    model: "dall-e-3",
+  const createImageResponse = await config.ai.openAi.images.generate({
+    model: config.ai.imageModel,
     prompt,
     n: 1,
     size: "1024x1024",
