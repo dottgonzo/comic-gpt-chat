@@ -3,6 +3,7 @@ import { TPanel, TMessageContent, TToken } from "../interfaces";
 
 import { storePanelImage } from "./storage";
 import { config } from "../local";
+import cors from "cors";
 
 import { paint } from "./paint";
 import {
@@ -21,7 +22,12 @@ import {
 } from "./queries";
 
 export const webserver = express();
-
+webserver.use(
+  cors({
+    credentials: true,
+    origin: "*",
+  })
+);
 webserver.get("/ping", (req, res) => {
   res.json({ pong: true });
 });
