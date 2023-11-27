@@ -4,22 +4,25 @@ import { paint } from "../libs/paint";
 export async function paintOne() {
   const chat: TPanel = {
     background: "Lisboa",
-    chat: [
+    usersChats: [
       {
-        nickname: "yellow chick",
-        content: [
+        character: "yellow chick",
+        memberId: "123",
+        contents: [
           {
             text: "fai puzza!",
-            timestamp: new Date(),
+            datetime: new Date(),
           },
         ],
       },
       {
-        nickname: "pinguino",
-        content: [
+        memberId: "124",
+
+        character: "pinguino",
+        contents: [
           {
             text: "oggi non mi sono lavato...",
-            timestamp: new Date(),
+            datetime: new Date(),
           },
         ],
       },
