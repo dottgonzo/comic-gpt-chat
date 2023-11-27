@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import type { ClientOptions } from "minio";
 import { initStorage } from "cloud-object-storage-lib";
+import JwtAuth from "jwt-http-utils";
 
 const storage: {
   type: "s3" | "minio";
@@ -31,17 +32,13 @@ export const config = {
     chatModel: "GPT-4",
     imageModel: "dall-e-3",
   },
-  jwt: {
-    secret: process.env.JWT_SECRET || "n56ergrge_rgETHergTer768",
-
-    config: Object.freeze({
-      expiresIn: process.env.TOKENEXPIRESINSECONDS
-        ? Number(process.env.TOKENEXPIRESINSECONDS)
-        : 60 * 60 * 24,
-      issuer: process.env.ISSUER,
-      audience: process.env.AUDIENCE,
-    }),
-  },
+  jwt: new JwtAuth(process.env.JWT_SECRET || "test", {
+    expiresIn: process.env.TOKENEXPIRESINSECONDS
+      ? Number(process.env.TOKENEXPIRESINSECONDS)
+      : 60 * 60 * 24,
+    issuer: process.env.ISSUER as string,
+    audience: process.env.AUDIENCE as string,
+  }),
   database: {
     uri: process.env.MONGO_URI,
     dbName: process.env.MONGO_DBNAME,

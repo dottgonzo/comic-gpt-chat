@@ -5,11 +5,13 @@ import stories from "./stories";
 import panels from "./panels";
 import members from "./members";
 import messages from "./messages";
+import storyMembers from "./storyMembers";
 export let db: {
   stories: typeof stories;
   members: typeof members;
   panels: typeof panels;
   messages: typeof messages;
+  storyMembers: typeof storyMembers;
 };
 
 export async function initDb(config: {
@@ -23,5 +25,6 @@ export async function initDb(config: {
       members,
       panels,
       messages,
+      storyMembers,
     };
 }

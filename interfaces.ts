@@ -15,3 +15,7 @@ export type TPanel = {
 export type TMessageContent = {
   text: string;
 };
+
+export type TToken = {
+  memberId: string;
+};

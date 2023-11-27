@@ -59,9 +59,51 @@ export async function updatePanel(
   return updatedPAnel;
 }
 
+export async function removeMeFromStory(storyId: string, memberId: string) {
+  await db.storyMembers.findOneAndDelete({
+    story: storyId,
+    member: memberId,
+  });
+  const storyMembers = await db.storyMembers.find({ story: storyId }).lean();
+  if (!storyMembers?.length) {
+    await db.stories.findByIdAndDelete(storyId);
+  }
+
+  return true;
+}
+export async function getPublicStories(opts?: {
+  limit?: number;
+  take?: number;
+  sort?: string;
+}) {
+  const storyMembers = await db.storyMembers.find({}).lean();
+  const stories = await db.stories
+    .find({
+      _id: { $in: storyMembers.map((sm) => sm.story) },
+    })
+    .sort({ [opts?.sort || "datetime"]: -1 })
+    .limit(opts?.limit || 10)
+    .lean();
+  return stories;
+}
+export async function getMyStories(
+  memberId: string,
+  opts?: { limit?: number; take?: number; sort?: string }
+) {
+  const storyMembers = await db.storyMembers.find({ member: memberId }).lean();
+  const stories = await db.stories
+    .find({
+      _id: { $in: storyMembers.map((sm) => sm.story) },
+    })
+    .sort({ [opts?.sort || "datetime"]: -1 })
+    .limit(opts?.limit || 10)
+    .lean();
+  return stories;
+}
+
 export async function getStoryConversation(storyId: string) {
   // const story = await getStoryById(storyId);
-  const panels = await db.panels.find({ story: storyId });
+  const panels = await db.panels.find({ story: storyId }).lean();
   const panelImages: { datetime: Date; imageUrl: string }[] = [];
   for (const panel of panels) {
     panelImages.push({ datetime: panel.datetime, imageUrl: panel.image });
@@ -69,24 +111,54 @@ export async function getStoryConversation(storyId: string) {
   return panelImages;
 }
 
+export async function getStoryMembers(storyId: string) {
+  const storyMembers = await db.storyMembers.find({ story: storyId }).lean();
+  if (!storyMembers?.length) {
+    throw new Error("storyMembers not found");
+  }
+  return storyMembers;
+}
+
 export async function getStoryById(storyId: string) {
-  const story = await db.stories.findById(storyId);
+  const story = await db.stories.findById(storyId).lean();
   if (!story) {
     throw new Error("Story not found");
   }
   return story;
 }
-export async function createStory(background: string) {
+export async function createStory(
+  memberId: string,
+  character: string,
+  background: string
+) {
   const story = await db.stories.create({
     background,
     datetime: new Date(),
     language: "en",
   });
+  await db.storyMembers.create({
+    member: memberId,
+    story: story._id,
+    datetime: new Date(),
+    character,
+  });
   return story;
 }
-
+export async function joinStory(
+  storyId: string,
+  memberId: string,
+  character: string
+) {
+  await db.storyMembers.create({
+    member: memberId,
+    story: storyId,
+    datetime: new Date(),
+    character,
+  });
+  return true;
+}
 export async function getPanelConversation(panelId: string) {
-  const messages = await db.messages.find({ panel: panelId });
+  const messages = await db.messages.find({ panel: panelId }).lean();
   if (!messages) {
     throw new Error("Panel not found");
   }

@@ -13,6 +13,7 @@
     "cloud-object-storage-lib": "^0.1.0",
     "dayjs": "^1.11.10",
     "express": "^4.18.2",
+    "jwt-http-utils": "^0.0.3",
     "nodemongooselib": "^0.0.6",
     "openai": "^4.20.0",
     "ts-node": "^10.9.1",
