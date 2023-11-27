@@ -45,4 +45,5 @@ export const config = {
     collection: process.env.MONGO_DEVICE_COLLECTION,
   },
   storage: initStorage(storage),
+  test: process.env.TEST ? true : false,
 };
