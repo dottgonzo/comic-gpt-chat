@@ -22,6 +22,7 @@ import {
 } from "./queries";
 
 export const webserver = express();
+webserver.options("*", cors());
 webserver.use(
   cors({
     credentials: true,
