@@ -36,13 +36,11 @@ export const config = {
     expiresIn: process.env.TOKENEXPIRESINSECONDS
       ? Number(process.env.TOKENEXPIRESINSECONDS)
       : 60 * 60 * 24,
-    issuer: process.env.ISSUER as string,
-    audience: process.env.AUDIENCE as string,
+    issuer: process.env.ISSUER || "aichat",
+    audience: process.env.AUDIENCE || "aichat",
   }),
   database: {
     uri: process.env.MONGO_URI,
-    dbName: process.env.MONGO_DBNAME,
-    collection: process.env.MONGO_DEVICE_COLLECTION,
   },
   storage: initStorage(storage),
   test: process.env.TEST ? true : false,
