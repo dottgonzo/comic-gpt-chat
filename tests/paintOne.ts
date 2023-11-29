@@ -3,14 +3,14 @@ import { paint } from "../libs/paint";
 
 export async function paintOne() {
   const chat: TPanel = {
-    background: "Catania - Piazza Duomo",
+    background: "fishmonger of Catania (Italy)",
     usersChats: [
       {
         character: "Mammut",
         memberId: "123",
         contents: [
           {
-            text: "Update Milano?",
+            text: "U facisti!?",
             datetime: new Date(),
           },
         ],
@@ -20,7 +20,7 @@ export async function paintOne() {
         character: "Walrus",
         contents: [
           {
-            text: "Subito Bedda!!!",
+            text: "Se, apposto mbare",
             datetime: new Date(),
           },
         ],
