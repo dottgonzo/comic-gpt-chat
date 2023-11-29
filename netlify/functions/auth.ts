@@ -15,6 +15,11 @@ const app = router({
     clientID: process.env.GITHUB_CLIENT_ID || "test",
     clientSecret: process.env.GITHUB_CLIENT_SECRET || "test",
   },
+  google: {
+    clientID: process.env.GOOGLE_CLIENT_ID || "test",
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || "test",
+  },
+
   local: { register: true },
 });
 const handler = serverless(app);
