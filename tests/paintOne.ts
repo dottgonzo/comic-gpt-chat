@@ -3,25 +3,24 @@ import { paint } from "../libs/paint";
 
 export async function paintOne() {
   const chat: TPanel = {
-    background: "Lisboa",
+    background: "Catania - Piazza Duomo",
     usersChats: [
       {
-        character: "yellow chick",
+        character: "Mammut",
         memberId: "123",
         contents: [
           {
-            text: "fai puzza!",
+            text: "Update Milano?",
             datetime: new Date(),
           },
         ],
       },
       {
         memberId: "124",
-
-        character: "pinguino",
+        character: "Walrus",
         contents: [
           {
-            text: "oggi non mi sono lavato...",
+            text: "Subito Bedda!!!",
             datetime: new Date(),
           },
         ],
