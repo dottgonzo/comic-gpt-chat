@@ -94,7 +94,7 @@ export async function getPublicStories(opts?: {
       (story as unknown as any).image =
         `/stories/${story._id}/panels/${panels[0]._id}/image`;
     }
-    (story as unknown as any).panelsCount = panels.length;
+    (story as unknown as any).panelsCount = panels.length + 1;
   }
   return stories;
 }
