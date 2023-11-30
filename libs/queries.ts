@@ -87,11 +87,14 @@ export async function getPublicStories(opts?: {
     .limit(opts?.limit || 10)
     .lean();
   for (const story of stories) {
-    const panel = await db.panels.findOne({ story: story._id }).lean();
-    if (panel) {
+    const panels = await db.panels
+      .find({ story: story._id }, { _id: true })
+      .lean();
+    if (panels[0]) {
       (story as unknown as any).image =
-        `/stories/${story._id}/panels/${panel._id}/image`;
+        `/stories/${story._id}/panels/${panels[0]._id}/image`;
     }
+    (story as unknown as any).panelsCount = panels.length;
   }
   return stories;
 }
