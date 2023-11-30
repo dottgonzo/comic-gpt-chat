@@ -1,8 +1,12 @@
+import dayjs from "dayjs";
 import { TPanel, TPanelUserChat } from "../interfaces";
 import { db } from "./db/index";
 export async function getLastPanel(storyId: string) {
   const panel = await db.panels
-    .find({ story: storyId })
+    .find({
+      story: storyId,
+      datetime: { $gte: dayjs().subtract(90, "seconds") },
+    })
     .limit(1)
     .sort({ datetime: -1 });
 
@@ -219,11 +223,17 @@ export async function getPanel4MemberById(panelId: string, member_id: string) {
   if (!panel) {
     throw new Error("Panel not found");
   }
-  const storyMember = await db.storyMembers
-    .findOne({ story: panel.story, member: member_id })
-    .lean();
-  if (!storyMember) {
+  const story = await db.stories.findById(panel.story).lean();
+  if (!story) {
     throw new Error("Story not found");
+  }
+  if (!story.public) {
+    const storyMember = await db.storyMembers
+      .findOne({ story: panel.story, member: member_id })
+      .lean();
+    if (!storyMember) {
+      throw new Error("Story not found");
+    }
   }
 
   if (!panel) {
