@@ -81,7 +81,7 @@ export async function getPublicStories(opts?: {
   const storyMembers = await db.storyMembers.find({}).lean();
   const stories = await db.stories
     .find({
-      _id: { $in: storyMembers.map((sm) => sm.story) },
+      public: true,
     })
     .sort({ [opts?.sort || "datetime"]: -1 })
     .limit(opts?.limit || 10)
