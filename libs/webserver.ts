@@ -96,7 +96,7 @@ webserver.get("/stories/withme", async (req: Request, res) => {
   res.json({ stories });
 });
 
-webserver.post("/story", async (req: Request, res) => {
+webserver.post("/stories", async (req: Request, res) => {
   const member_id = (req as any).member.member_id;
   const { character, background } = req.body as {
     character: string;
@@ -107,21 +107,21 @@ webserver.post("/story", async (req: Request, res) => {
   res.json({ id: story._id.toString() });
 });
 
-webserver.post("/story/:storyId/join", async (req: Request, res) => {
+webserver.post("/stories/:storyId/join", async (req: Request, res) => {
   const member_id = (req as any).member.member_id;
   const { character } = req.body;
   await joinStory(req.params.storyId, member_id, character);
   res.json({ ok: true });
 });
 
-webserver.delete("/story/:storyId", async (req: Request, res) => {
+webserver.delete("/stories/:storyId", async (req: Request, res) => {
   const member_id = (req as any).member.member_id;
   const { storyId } = req.body;
   await removeMeFromStory(storyId, member_id);
   res.json({ ok: true });
 });
 
-webserver.get("/story/:storyId", async (req: Request, res) => {
+webserver.get("/stories/:storyId", async (req: Request, res) => {
   try {
     const storyConversation = await getStoryConversation(req.params.storyId);
     res.json({ conversation: storyConversation });
@@ -130,7 +130,7 @@ webserver.get("/story/:storyId", async (req: Request, res) => {
     res.sendStatus(500);
   }
 });
-webserver.post("/story/:storyId/panel", async (req: Request, res) => {
+webserver.post("/stories/:storyId/panel", async (req: Request, res) => {
   const member_id = (req as any).member.member_id;
   const storyId = req.params.storyId;
   if (!storyId) {
@@ -209,7 +209,7 @@ webserver.post("/story/:storyId/panel", async (req: Request, res) => {
   res.json({ imageUri });
 });
 webserver.get(
-  "/story/:storyId/panels/:panelId/image",
+  "/stories/:storyId/panels/:panelId/image",
   async (req: Request, res) => {
     const member_id = (req as any).member.member_id;
     const panel = await getPanel4MemberById(req.params.panelId, member_id);

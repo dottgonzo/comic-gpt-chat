@@ -86,6 +86,13 @@ export async function getPublicStories(opts?: {
     .sort({ [opts?.sort || "datetime"]: -1 })
     .limit(opts?.limit || 10)
     .lean();
+  for (const story of stories) {
+    const panel = await db.panels.findOne({ story: story._id }).lean();
+    if (panel) {
+      (story as unknown as any).image =
+        `/stories/${story._id}/panels/${panel._id}/image`;
+    }
+  }
   return stories;
 }
 export async function getMyStories(
@@ -100,6 +107,13 @@ export async function getMyStories(
     .sort({ [opts?.sort || "datetime"]: -1 })
     .limit(opts?.limit || 10)
     .lean();
+  for (const story of stories) {
+    const panel = await db.panels.findOne({ story: story._id }).lean();
+    if (panel) {
+      (story as unknown as any).image =
+        `/stories/${story._id}/panels/${panel._id}/image`;
+    }
+  }
   return stories;
 }
 
