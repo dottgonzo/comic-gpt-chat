@@ -3,7 +3,7 @@ export type TPanelConversationContent = {
   datetime: Date;
 };
 export type TPanelUserChat = {
-  memberId: string;
+  member_id: string;
   character: string;
   contents: TPanelConversationContent[];
 };
@@ -17,5 +17,5 @@ export type TMessageContent = {
 };
 
 export type TToken = {
-  memberId: string;
+  member_id: string;
 };

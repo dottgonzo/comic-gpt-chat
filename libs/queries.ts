@@ -21,8 +21,10 @@ export async function createPanel(
   });
   try {
     await db.messages.create({
-      content: usersChat.contents,
-      datetime: new Date(),
+      member: usersChat.member_id,
+      text: usersChat.contents[0].text,
+      datetime: usersChat.contents[0].datetime,
+      character: usersChat.character,
       story: storyId,
       panel: newPanel._id,
     });
@@ -44,7 +46,7 @@ export async function updatePanel(
     datetime: new Date(),
     story: storyId,
     panel: panelId,
-    member: usersChat.memberId,
+    member: usersChat.member_id,
     character: usersChat.character,
   });
   const updatedPAnel = await db.panels.findByIdAndUpdate(
@@ -103,10 +105,17 @@ export async function getMyStories(
 
 export async function getStoryConversation(storyId: string) {
   // const story = await getStoryById(storyId);
+  if (!storyId || storyId.length < 24) {
+    throw new Error("StoryId not provided");
+  }
   const panels = await db.panels.find({ story: storyId }).lean();
-  const panelImages: { datetime: Date; imageUrl: string }[] = [];
+  const panelImages: { datetime: Date; imageUrl: string; _id: string }[] = [];
   for (const panel of panels) {
-    panelImages.push({ datetime: panel.datetime, imageUrl: panel.image });
+    panelImages.push({
+      datetime: panel.datetime,
+      imageUrl: panel.image,
+      _id: panel._id.toString(),
+    });
   }
   return panelImages;
 }
@@ -165,12 +174,12 @@ export async function getPanelConversation(panelId: string) {
 
   const usersChats: TPanelUserChat[] = [];
   for (const message of messages) {
-    const userChat = usersChats.find((c) => c.memberId === message.member);
+    const userChat = usersChats.find((c) => c.member_id === message.member);
     if (!userChat) {
       usersChats.push({
         character: message.character,
         contents: [{ text: message.text, datetime: message.datetime }],
-        memberId: message.member,
+        member_id: message.member,
       });
     } else {
       if (!userChat.contents.find((c) => c.datetime === message.datetime)) {
@@ -183,4 +192,23 @@ export async function getPanelConversation(panelId: string) {
   }
 
   return usersChats;
+}
+
+export async function getPanel4MemberById(panelId: string, member_id: string) {
+  const panel = await db.panels.findById(panelId).lean();
+  if (!panel) {
+    throw new Error("Panel not found");
+  }
+  const storyMember = await db.storyMembers
+    .findOne({ story: panel.story, member: member_id })
+    .lean();
+  if (!storyMember) {
+    throw new Error("Story not found");
+  }
+
+  if (!panel) {
+    throw new Error("Panel not found");
+  }
+
+  return panel;
 }
