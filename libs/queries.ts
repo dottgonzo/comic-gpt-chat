@@ -55,7 +55,7 @@ export async function updatePanel(
   });
   const updatedPAnel = await db.panels.findByIdAndUpdate(
     panelId,
-    { $set: { image_url } },
+    { $set: { image: image_url } },
     { new: true }
   );
   if (!updatedPAnel) {
